@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from "react";
 import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Input,
@@ -10,10 +11,9 @@ import {
   useDisclosure,
   IconButton,
 } from "@chakra-ui/react";
-import React, { useEffect, useRef, useState } from "react";
-import useOnClickOutside from "../utils/hooks/useOnClickOutside";
 
 import { Entry } from "../utils/typeUtils";
+import useOnClickOutside from "../utils/hooks/useOnClickOutside";
 import { EntryListItemContent } from "./EntryListItemContent";
 
 interface EntrySearchProps {
@@ -52,6 +52,9 @@ function EntrySearch({ entries, onEntrySelect }: EntrySearchProps) {
           value={searchInputValue}
           onChange={(e) => setSearchInputValue(e.currentTarget.value)}
           placeholder="Search food or drinks"
+          background={"gray.200"}
+          _placeholder={{ color: "gray.400" }}
+          _focus={{ background: "white" }}
         />
         <InputRightElement children={<SearchIcon color="gray.500" />} />
       </InputGroup>

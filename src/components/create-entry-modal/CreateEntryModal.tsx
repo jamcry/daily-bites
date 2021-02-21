@@ -47,18 +47,32 @@ function CreateEntryModal({
 
         <form onSubmit={handleSubmit}>
           <ModalBody>
-            <FormControl id="name">
-              <FormLabel>Name</FormLabel>
-              <Input
-                type="name"
-                name={NAME}
-                placeholder="e.g. 1 Scrambled Egg"
-                value={formState[NAME]}
-                onChange={handleInputChange}
-                isRequired
-                background="white"
-              />
-            </FormControl>
+            <HStack>
+              <FormControl id="name" flex={2}>
+                <FormLabel>Name</FormLabel>
+                <Input
+                  type="name"
+                  name={NAME}
+                  placeholder="e.g. 1 Scrambled Egg"
+                  value={formState[NAME]}
+                  onChange={handleInputChange}
+                  isRequired
+                  background="white"
+                />
+              </FormControl>
+
+              <FormControl id="kcal" flex={1}>
+                <FormLabel>kcal</FormLabel>
+                <Input
+                  type="number"
+                  name={KCAL}
+                  value={formState[KCAL]}
+                  onChange={handleInputChange}
+                  isRequired
+                  background="white"
+                />
+              </FormControl>
+            </HStack>
 
             <HStack mt={4}>
               <FormControl id="protein">
@@ -99,18 +113,6 @@ function CreateEntryModal({
                   background="white"
                 />
               </FormControl>
-
-              <FormControl id="kcal">
-                <FormLabel>kcal</FormLabel>
-                <Input
-                  type="number"
-                  name={KCAL}
-                  value={formState[KCAL]}
-                  onChange={handleInputChange}
-                  isRequired
-                  background="white"
-                />
-              </FormControl>
             </HStack>
 
             <HStack mt={4} verticalAlign="bottom">
@@ -128,7 +130,7 @@ function CreateEntryModal({
               </FormControl>
 
               <FormControl id="amount_type" flex={1}>
-                <FormLabel>Amount Type</FormLabel>
+                <FormLabel>Unit</FormLabel>
                 <Select background="white" defaultValue={ENTRY_AMOUNT_TYPES[0]}>
                   {ENTRY_AMOUNT_TYPES.map((t) => (
                     <option key={`option-${t}`} value={t}>

@@ -17,6 +17,11 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
 } from "@chakra-ui/react";
 
 import CreateEntryModal from "./components/create-entry-modal/CreateEntryModal";
@@ -55,7 +60,7 @@ function App() {
 
   return (
     <div className="App">
-      <Box p={8}>
+      <Box padding={{ lg: "24px", base: "12px" }}>
         <Grid
           gridTemplateColumns={"1fr 40px"}
           gridGap={5}
@@ -100,13 +105,17 @@ function App() {
             >
               <EntryNutritionDefinitionList
                 values={todayEntryLogs.reduce(
-                  (prevValues, { entry }) => {
+                  (prevValues, { entry, numOfServings }) => {
                     return {
                       ...prevValues,
-                      protein: prevValues.protein + (entry.protein || 0),
-                      carb: prevValues.carb + (entry.carb || 0),
-                      fat: prevValues.fat + (entry.fat || 0),
-                      calories: prevValues.calories + (entry.calories || 0),
+                      protein:
+                        prevValues.protein +
+                        (entry.protein || 0) * numOfServings,
+                      carb: prevValues.carb + (entry.carb || 0) * numOfServings,
+                      fat: prevValues.fat + (entry.fat || 0) * numOfServings,
+                      calories:
+                        prevValues.calories +
+                        (entry.calories || 0) * numOfServings,
                     };
                   },
                   {
@@ -122,30 +131,29 @@ function App() {
             <List mt={7} maxHeight={500} overflow={"auto"}>
               {!todayEntryLogs.length && <NoLogMessageBox />}
 
-              {todayEntryLogs?.map((e) => (
-                <ListItem
-                  key={e.id}
-                  background={"gray.100"}
-                  mb={3}
-                  p={2}
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"space-between"}
-                  borderRadius={4}
-                  gridGap={2}
-                >
-                  <EntryListItemContent entry={e.entry} />
-
-                  <IconButton
-                    icon={<DeleteIcon />}
-                    aria-label={`delete ${e.entry.name}`}
-                    onClick={() => {
-                      setTodayEntryLogs(
-                        todayEntryLogs.filter((log) => log.id !== e.id)
-                      );
-                    }}
-                  />
-                </ListItem>
+              {todayEntryLogs?.map((loggedItem) => (
+                <EntryLogListItem
+                  key={loggedItem.id}
+                  entryLog={loggedItem}
+                  onNumOfServingChange={(num: number) => {
+                    setTodayEntryLogs(
+                      todayEntryLogs.map((log) => {
+                        if (log.id === loggedItem.id) {
+                          return {
+                            ...log,
+                            numOfServings: num,
+                          };
+                        }
+                        return log;
+                      })
+                    );
+                  }}
+                  onDelete={() =>
+                    setTodayEntryLogs(
+                      todayEntryLogs.filter((log) => log.id !== loggedItem.id)
+                    )
+                  }
+                />
               ))}
             </List>
           </Box>
@@ -165,6 +173,7 @@ function App() {
       id: generateRandomString(),
       addedAt: new Date().getTime(),
       entry,
+      numOfServings: 1,
     };
 
     setTodayEntryLogs([...todayEntryLogs, newTodayEntry]);
@@ -197,6 +206,79 @@ function NoLogMessageBox() {
         There are no items in today's log. You can search and add an item above.
       </AlertDescription>
     </Alert>
+  );
+}
+
+function EntryLogListItem({
+  entryLog,
+  onNumOfServingChange,
+  onDelete,
+}: {
+  entryLog: EntryLog;
+  onNumOfServingChange: (num: number) => void;
+  onDelete: VoidFunction;
+}) {
+  /*
+   * Directly updating log state (with onNumOfServingChange()) will prevent
+   * user from manually entering decimal numbers, because parseFloat() will
+   * remove "." as soon as it is entered. So, a local input state is also
+   * kept here, and log state is updated only when input value is valid
+   */
+
+  const [numOfServingInputValue, setNumOfServingInputValue] = useState(
+    entryLog.numOfServings.toString()
+  );
+
+  useEffect(() => {
+    if (!numOfServingInputValue.endsWith(".")) {
+      onNumOfServingChange(parseFloat(numOfServingInputValue));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [numOfServingInputValue]);
+
+  return (
+    <ListItem
+      key={entryLog.id}
+      background={"gray.100"}
+      mb={3}
+      p={2}
+      display={"flex"}
+      alignItems={"flex-end"}
+      justifyContent={"space-between"}
+      borderRadius={4}
+      gridGap={"8px"}
+      position={"relative"}
+    >
+      <EntryListItemContent entry={entryLog.entry} />
+
+      <NumberInput
+        value={numOfServingInputValue}
+        step={0.1}
+        min={0.1}
+        precision={1}
+        onChange={(valueStr, valNum) => {
+          setNumOfServingInputValue(valueStr);
+        }}
+        w={100}
+        focusInputOnChange={false}
+      >
+        <NumberInputField background={"white"} />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
+
+      <IconButton
+        icon={<DeleteIcon color={"gray.400"} />}
+        aria-label={`delete ${entryLog.entry.name}`}
+        onClick={onDelete}
+        size={"sm"}
+        position={"absolute"}
+        top={0}
+        right={0}
+      />
+    </ListItem>
   );
 }
 

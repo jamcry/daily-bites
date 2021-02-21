@@ -13,35 +13,35 @@ export function EntryNutritionDefinitionList({
       as={"dl"}
       display={"grid"}
       gridTemplateColumns={"repeat(4, 1fr)"}
-      gridGap={6}
+      gridGap={{ lg: 6, base: 3 }}
       textAlign={{ base: "left", lg: "right" }}
     >
       <Grid>
         <ListItem as="dt" fontSize={"x-small"} color={"gray.600"}>
           PROTEIN
         </ListItem>
-        <ListItem as="dd">{protein || "-"}</ListItem>
+        <ListItem as="dd">{protein?.toFixed(1) || "-"}</ListItem>
       </Grid>
 
       <Grid>
         <ListItem as="dt" fontSize={"x-small"} color={"gray.600"}>
           CARB
         </ListItem>
-        <ListItem as="dd">{carb || "-"}</ListItem>
+        <ListItem as="dd">{carb?.toFixed(1) || "-"}</ListItem>
       </Grid>
 
       <Grid>
         <ListItem as="dt" fontSize={"x-small"} color={"gray.600"}>
           FAT
         </ListItem>
-        <ListItem as="dd">{fat || "-"}</ListItem>
+        <ListItem as="dd">{fat?.toFixed(1) || "-"}</ListItem>
       </Grid>
 
       <Grid>
         <ListItem as="dt" fontSize={"x-small"} color={"gray.600"}>
           KCAL
         </ListItem>
-        <ListItem as="dd">{calories || "-"}</ListItem>
+        <ListItem as="dd">{calories?.toFixed(1) || "-"}</ListItem>
       </Grid>
     </List>
   );

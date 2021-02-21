@@ -22,7 +22,10 @@ export function EntryListItemContent({ entry }: { entry: Entry }) {
       >
         <Text>{entry.name}</Text>
         <Text color={"gray.600"}>
-          {entry.amount.value} {entry.amount.type}
+          -
+          <i>
+            {entry.amount.value} {entry.amount.type}
+          </i>
         </Text>
       </Flex>
 

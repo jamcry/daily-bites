@@ -16,6 +16,7 @@ export interface Entry {
 export interface EntryLog {
   id: string;
   addedAt: number; // timestamp
+  numOfServings: number;
   entry: Entry;
 }
 
