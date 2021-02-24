@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { AddIcon, DeleteIcon, HamburgerIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  DeleteIcon,
+  DownloadIcon,
+  HamburgerIcon,
+} from "@chakra-ui/icons";
 import {
   Box,
   Heading,
@@ -27,7 +32,11 @@ import {
 import CreateEntryModal from "./components/create-entry-modal/CreateEntryModal";
 import { defaults, Entry, EntryLog } from "./utils/typeUtils";
 import { loadDataFromLS, saveDataToLS } from "./utils/localStorageUtils";
-import { generateRandomString, getDateStringInYYYYMMDD } from "./utils/utils";
+import {
+  downloadObjectAsJSON,
+  generateRandomString,
+  getDateStringInYYYYMMDD,
+} from "./utils/utils";
 import EntrySearch from "./components/EntrySearch";
 import { EntryListItemContent } from "./components/EntryListItemContent";
 import { EntryNutritionDefinitionList } from "./components/EntryNutritionDefinitionList";
@@ -82,6 +91,17 @@ function App() {
             <MenuList zIndex={4}>
               <MenuItem icon={<AddIcon />} onClick={openCreateModal}>
                 Create Entry
+              </MenuItem>
+              <MenuItem
+                icon={<DownloadIcon />}
+                onClick={() =>
+                  downloadObjectAsJSON(
+                    loadDataFromLS(),
+                    `dailybites_data_${new Date().getTime()}`
+                  )
+                }
+              >
+                Download data (JSON)
               </MenuItem>
             </MenuList>
           </Menu>
