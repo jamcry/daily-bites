@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -27,15 +27,26 @@ interface CreateEntryModalProps {
   isOpen: boolean;
   onClose: VoidFunction;
   onCreate: (entry: Entry) => void;
+  entryNameInitialValue?: string;
 }
 
 function CreateEntryModal({
   isOpen,
   onClose,
   onCreate,
+  entryNameInitialValue,
 }: CreateEntryModalProps) {
   const { NAME, PROTEIN, CARB, FAT, KCAL } = CREATE_ENTRY_FORM_INPUT_NAMES;
   const [formState, setFormState] = useState(initialCreateEntryFormState);
+
+  useEffect(() => {
+    if (entryNameInitialValue) {
+      setFormState({
+        ...formState,
+        [NAME]: entryNameInitialValue,
+      });
+    }
+  }, [entryNameInitialValue]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

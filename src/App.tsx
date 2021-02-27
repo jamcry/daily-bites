@@ -68,8 +68,13 @@ function App() {
   }, [myEntries, todayEntryLogs]);
 
   return (
-    <div className="App">
-      <Box padding={{ lg: "24px", base: "12px" }}>
+    <Box bgColor={"gray.50"} width={"100%"} height={"100vh"}>
+      <Box
+        padding={{ lg: "24px", base: "12px" }}
+        maxWidth={"960px"}
+        height={"100%"}
+        margin={"auto"}
+      >
         <Grid
           gridTemplateColumns={"1fr 40px"}
           gridGap={5}
@@ -107,9 +112,13 @@ function App() {
           </Menu>
         </Grid>
 
-        <EntrySearch entries={myEntries} onEntrySelect={handleAddEntry} />
+        <EntrySearch
+          entries={myEntries}
+          onEntrySelect={handleAddEntry}
+          onEntryCreate={handleCreateEntry}
+        />
 
-        <HStack w="100%" alignItems={"flex-start"} spacing={10} mt={10}>
+        <HStack w="100%" alignItems={"flex-start"} spacing={10} mt={5}>
           <Box flex={1}>
             <Heading as="h2" size="md" mb={3}>
               Today's Log
@@ -148,34 +157,36 @@ function App() {
               />
             </Grid>
 
-            <List mt={7} maxHeight={500} overflow={"auto"}>
-              {!todayEntryLogs.length && <NoLogMessageBox />}
+            <Box overflow={"auto"} maxHeight={"calc(100vh - 350px)"} mt={7}>
+              <List>
+                {!todayEntryLogs.length && <NoLogMessageBox />}
 
-              {todayEntryLogs?.map((loggedItem) => (
-                <EntryLogListItem
-                  key={loggedItem.id}
-                  entryLog={loggedItem}
-                  onNumOfServingChange={(num: number) => {
-                    setTodayEntryLogs(
-                      todayEntryLogs.map((log) => {
-                        if (log.id === loggedItem.id) {
-                          return {
-                            ...log,
-                            numOfServings: num,
-                          };
-                        }
-                        return log;
-                      })
-                    );
-                  }}
-                  onDelete={() =>
-                    setTodayEntryLogs(
-                      todayEntryLogs.filter((log) => log.id !== loggedItem.id)
-                    )
-                  }
-                />
-              ))}
-            </List>
+                {todayEntryLogs?.map((loggedItem) => (
+                  <EntryLogListItem
+                    key={loggedItem.id}
+                    entryLog={loggedItem}
+                    onNumOfServingChange={(num: number) => {
+                      setTodayEntryLogs(
+                        todayEntryLogs.map((log) => {
+                          if (log.id === loggedItem.id) {
+                            return {
+                              ...log,
+                              numOfServings: num,
+                            };
+                          }
+                          return log;
+                        })
+                      );
+                    }}
+                    onDelete={() =>
+                      setTodayEntryLogs(
+                        todayEntryLogs.filter((log) => log.id !== loggedItem.id)
+                      )
+                    }
+                  />
+                ))}
+              </List>
+            </Box>
           </Box>
         </HStack>
 
@@ -185,7 +196,7 @@ function App() {
           onCreate={handleCreateEntry}
         />
       </Box>
-    </div>
+    </Box>
   );
 
   function handleAddEntry(entry: Entry) {
