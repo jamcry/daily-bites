@@ -27,6 +27,7 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  Input,
 } from "@chakra-ui/react";
 
 import CreateEntryModal from "./components/create-entry-modal/CreateEntryModal";
@@ -51,21 +52,30 @@ function App() {
   const [myEntries, setMyEntries] = useState<Entry[]>(
     lsData?.myEntries || defaults
   );
-  const [todayEntryLogs, setTodayEntryLogs] = useState<EntryLog[]>(
-    lsData?.myLogs?.[getDateStringInYYYYMMDD()] || []
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const selectedDateInYYYYMMDD = getDateStringInYYYYMMDD(selectedDate);
+  const [selectedDayEntryLogs, setSelectedDayEntryLogs] = useState<EntryLog[]>(
+    lsData?.myLogs?.[selectedDateInYYYYMMDD] || []
   );
+
+  useEffect(() => {
+    // When selected date is changed, load the logs at the selected date, or initialize with empty array
+    setSelectedDayEntryLogs(
+      loadDataFromLS()?.myLogs?.[selectedDateInYYYYMMDD] || []
+    );
+  }, [selectedDateInYYYYMMDD]);
 
   useEffect(() => {
     saveDataToLS({
       myEntries,
       myLogs: {
         ...loadDataFromLS()?.myLogs,
-        [getDateStringInYYYYMMDD()]: todayEntryLogs,
+        [selectedDateInYYYYMMDD]: selectedDayEntryLogs,
       },
     });
 
     console.log("* LocalStorage data was updated.");
-  }, [myEntries, todayEntryLogs]);
+  }, [myEntries, selectedDayEntryLogs, selectedDateInYYYYMMDD]);
 
   return (
     <Box bgColor={"gray.50"} width={"100%"} height={"100vh"}>
@@ -120,10 +130,22 @@ function App() {
 
         <HStack w="100%" alignItems={"flex-start"} spacing={10} mt={5}>
           <Box flex={1}>
-            <Heading as="h2" size="md" mb={3}>
-              Today's Log
-            </Heading>
+            <Grid mb={3} gridTemplateColumns={"1fr auto"} alignItems={"center"}>
+              <Heading as="h2" size="md">
+                {selectedDateInYYYYMMDD === getDateStringInYYYYMMDD()
+                  ? "Today's Logs"
+                  : "Day Logs"}
+              </Heading>
 
+              <Input
+                type="date"
+                // value is expected as "2020-02-30"
+                value={selectedDate.toISOString().slice(0, 10)}
+                onChange={(e) => {
+                  setSelectedDate(e.target.valueAsDate || new Date());
+                }}
+              />
+            </Grid>
             <Grid
               autoFlow="column"
               gap={10}
@@ -133,7 +155,7 @@ function App() {
               padding={2}
             >
               <EntryNutritionDefinitionList
-                values={todayEntryLogs.reduce(
+                values={selectedDayEntryLogs.reduce(
                   (prevValues, { entry, numOfServings }) => {
                     return {
                       ...prevValues,
@@ -157,17 +179,22 @@ function App() {
               />
             </Grid>
 
-            <Box overflow={"auto"} maxHeight={"calc(100vh - 350px)"} mt={7}>
+            <Box
+              overflow={"auto"}
+              // todo: find a better way to fill the available height
+              maxHeight={"calc(100vh - 350px)"}
+              mt={7}
+            >
               <List>
-                {!todayEntryLogs.length && <NoLogMessageBox />}
+                {!selectedDayEntryLogs.length && <NoLogMessageBox />}
 
-                {todayEntryLogs?.map((loggedItem) => (
+                {selectedDayEntryLogs?.map((loggedItem) => (
                   <EntryLogListItem
                     key={loggedItem.id}
                     entryLog={loggedItem}
                     onNumOfServingChange={(num: number) => {
-                      setTodayEntryLogs(
-                        todayEntryLogs.map((log) => {
+                      setSelectedDayEntryLogs(
+                        selectedDayEntryLogs.map((log) => {
                           if (log.id === loggedItem.id) {
                             return {
                               ...log,
@@ -179,8 +206,10 @@ function App() {
                       );
                     }}
                     onDelete={() =>
-                      setTodayEntryLogs(
-                        todayEntryLogs.filter((log) => log.id !== loggedItem.id)
+                      setSelectedDayEntryLogs(
+                        selectedDayEntryLogs.filter(
+                          (log) => log.id !== loggedItem.id
+                        )
                       )
                     }
                   />
@@ -200,14 +229,14 @@ function App() {
   );
 
   function handleAddEntry(entry: Entry) {
-    const newTodayEntry: typeof todayEntryLogs[0] = {
+    const newTodayEntry: typeof selectedDayEntryLogs[0] = {
       id: generateRandomString(),
       addedAt: new Date().getTime(),
       entry,
       numOfServings: 1,
     };
 
-    setTodayEntryLogs([...todayEntryLogs, newTodayEntry]);
+    setSelectedDayEntryLogs([...selectedDayEntryLogs, newTodayEntry]);
   }
 
   function handleCreateEntry(entry: Entry) {
