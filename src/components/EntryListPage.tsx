@@ -69,43 +69,44 @@ function EntryListPage({ entries, setEntries }: EntryListPageProps) {
         </Grid>
 
         <List>
-          {!visibleEntries.length && (
+          {visibleEntries.length ? (
+            visibleEntries.map((entry) => (
+              <ListItem
+                key={`entry-list-page-${entry.fat}`}
+                display={"grid"}
+                gridTemplateColumns={"1fr auto auto"}
+                gridGap={"12px"}
+                alignItems={"center"}
+                padding={1}
+                borderBottom={"1px solid"}
+                borderColor={"gray.200"}
+                marginBottom={2}
+              >
+                <EntryListItemContent entry={entry} />
+
+                <DeleteButtonWithConfirmation
+                  onDelete={() => handleEntryDelete(entry)}
+                  alertDialogProps={{
+                    title: `Delete "${entry.name}"`,
+                    description: `Are you sure? You are removing the entry called "${entry.name}". This cannot be undone.`,
+                  }}
+                />
+
+                <IconButton
+                  icon={<EditIcon />}
+                  aria-label={`edit ${entry.name}`}
+                  onClick={() => {
+                    setEntryToBeEdited(entry);
+                    openCreateUpdateModal();
+                  }}
+                />
+              </ListItem>
+            ))
+          ) : (
             <Text textAlign="center" color={"gray.500"}>
               Nothing to see here...
             </Text>
           )}
-          {visibleEntries.map((entry) => (
-            <ListItem
-              key={`entry-list-page-${entry.fat}`}
-              display={"grid"}
-              gridTemplateColumns={"1fr auto auto"}
-              gridGap={"12px"}
-              alignItems={"center"}
-              padding={1}
-              borderBottom={"1px solid"}
-              borderColor={"gray.200"}
-              marginBottom={2}
-            >
-              <EntryListItemContent entry={entry} />
-
-              <DeleteButtonWithConfirmation
-                onDelete={() => handleEntryDelete(entry)}
-                alertDialogProps={{
-                  title: `Delete "${entry.name}"`,
-                  description: `Are you sure? You are removing the entry called "${entry.name}". This cannot be undone.`,
-                }}
-              />
-
-              <IconButton
-                icon={<EditIcon />}
-                aria-label={`edit ${entry.name}`}
-                onClick={() => {
-                  setEntryToBeEdited(entry);
-                  openCreateUpdateModal();
-                }}
-              />
-            </ListItem>
-          ))}
         </List>
       </Box>
 
