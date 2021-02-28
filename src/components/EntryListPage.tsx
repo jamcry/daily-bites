@@ -72,7 +72,7 @@ function EntryListPage({ entries, setEntries }: EntryListPageProps) {
           {visibleEntries.length ? (
             visibleEntries.map((entry) => (
               <ListItem
-                key={`entry-list-page-${entry.fat}`}
+                key={`entry-list-page-${entry.id}`}
                 display={"grid"}
                 gridTemplateColumns={"1fr auto auto"}
                 gridGap={"12px"}
