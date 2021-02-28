@@ -1,3 +1,5 @@
+import { Entry } from "./typeUtils";
+
 function generateRandomString(length = 6) {
   return Math.random().toString(20).substr(2, length);
 }
@@ -19,4 +21,15 @@ function downloadObjectAsJSON(exportObj: any, exportName: string) {
   downloadAnchorNode.remove();
 }
 
-export { generateRandomString, getDateStringInYYYYMMDD, downloadObjectAsJSON };
+function filterEntriesBySearchKeyword(entries: Entry[], keyword: string) {
+  return entries.filter((i) =>
+    i.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase())
+  );
+}
+
+export {
+  generateRandomString,
+  getDateStringInYYYYMMDD,
+  downloadObjectAsJSON,
+  filterEntriesBySearchKeyword,
+};

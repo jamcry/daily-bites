@@ -16,44 +16,56 @@ import {
   Select,
 } from "@chakra-ui/react";
 
-import { generateRandomString } from "../../utils/utils";
 import { Entry, ENTRY_AMOUNT_TYPES } from "../../utils/typeUtils";
 import {
-  CREATE_ENTRY_FORM_INPUT_NAMES,
+  CREATE_UPDATE_ENTRY_FORM_INPUT_NAMES,
   initialCreateEntryFormState,
-} from "./createEntryModalConstants";
+} from "./createUpdateEntryModalConstants";
+import {
+  getEditEntryModalInitialStateFromEntry,
+  createEntryFromEntryModalState,
+} from "./createUpdateEntryModalUtils";
 
 interface CreateEntryModalProps {
   isOpen: boolean;
   onClose: VoidFunction;
-  onCreate: (entry: Entry) => void;
-  entryNameInitialValue?: string;
+  onSubmit: (entry: Entry) => void;
+  // Entry is partial because only single field can be passed for initializing the form (for example pre-filled name)
+  entry?: Partial<Entry>;
+  mode?: "EDIT" | "CREATE";
 }
 
-function CreateEntryModal({
+function CreateUpdateEntryModal({
   isOpen,
   onClose,
-  onCreate,
-  entryNameInitialValue,
+  onSubmit,
+  entry,
+  mode = "CREATE",
 }: CreateEntryModalProps) {
-  const { NAME, PROTEIN, CARB, FAT, KCAL } = CREATE_ENTRY_FORM_INPUT_NAMES;
+  const {
+    NAME,
+    PROTEIN,
+    CARB,
+    FAT,
+    KCAL,
+  } = CREATE_UPDATE_ENTRY_FORM_INPUT_NAMES;
   const [formState, setFormState] = useState(initialCreateEntryFormState);
+  const isEditForm = mode === "EDIT";
 
   useEffect(() => {
-    if (entryNameInitialValue) {
-      setFormState({
-        ...formState,
-        [NAME]: entryNameInitialValue,
-      });
+    if (entry) {
+      setFormState(getEditEntryModalInitialStateFromEntry(entry));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entryNameInitialValue]);
+  }, [entry]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create New Entry</ModalHeader>
+        <ModalHeader>
+          {isEditForm ? `Edit "${entry?.name}"` : "Create New Entry"}
+        </ModalHeader>
 
         <ModalCloseButton />
 
@@ -166,7 +178,7 @@ function CreateEntryModal({
               textTransform={"uppercase"}
               letterSpacing={"0.02em"}
             >
-              Create
+              {isEditForm ? "Save" : "Create"}
             </Button>
           </ModalFooter>
         </form>
@@ -193,24 +205,10 @@ function CreateEntryModal({
 
   function handleSubmit(e: any) {
     e.preventDefault();
-
-    const entry: Entry = {
-      id: generateRandomString(10),
-      name: formState[NAME],
-      protein: parseFloat(formState[PROTEIN]),
-      carb: parseFloat(formState[CARB]),
-      fat: parseFloat(formState[FAT]),
-      calories: parseFloat(formState[KCAL]),
-      amount: {
-        value: parseFloat(formState.amount.value),
-        type: formState.amount.type,
-      },
-    };
-
-    onCreate(entry);
+    onSubmit(createEntryFromEntryModalState(formState, entry?.id));
     setFormState(initialCreateEntryFormState);
     onClose();
   }
 }
 
-export default CreateEntryModal;
+export default CreateUpdateEntryModal;

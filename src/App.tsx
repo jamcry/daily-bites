@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  AddIcon,
-  DeleteIcon,
-  DownloadIcon,
-  HamburgerIcon,
-} from "@chakra-ui/icons";
+import { AddIcon, DownloadIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
   Box,
   Heading,
@@ -28,9 +23,14 @@ import {
   NumberInputField,
   NumberInputStepper,
   Input,
+  TabList,
+  Tab,
+  TabPanel,
+  TabPanels,
+  Tabs,
 } from "@chakra-ui/react";
 
-import CreateEntryModal from "./components/create-entry-modal/CreateEntryModal";
+import CreateUpdateEntryModal from "./components/create-entry-modal/CreateUpdateEntryModal";
 import { defaults, Entry, EntryLog } from "./utils/typeUtils";
 import { loadDataFromLS, saveDataToLS } from "./utils/localStorageUtils";
 import {
@@ -41,6 +41,8 @@ import {
 import EntrySearch from "./components/EntrySearch";
 import { EntryListItemContent } from "./components/EntryListItemContent";
 import { EntryNutritionDefinitionList } from "./components/EntryNutritionDefinitionList";
+import EntryListPage from "./components/EntryListPage";
+import DeleteButtonWithConfirmation from "./components/delete-button-with-confirmation/DeleteButton";
 
 function App() {
   const lsData = loadDataFromLS();
@@ -82,16 +84,45 @@ function App() {
       <Box
         padding={{ lg: "24px", base: "12px" }}
         maxWidth={"960px"}
-        height={"100%"}
         margin={"auto"}
+        bgColor={"gray.50"}
       >
+        {renderHeader()}
+
+        <Tabs variant={"line"} colorScheme={"blue"} bgColor={"gray.50"} isLazy>
+          <TabList mb={2}>
+            <Tab background={"transparent"}>Logs</Tab>
+            <Tab>Entries</Tab>
+          </TabList>
+
+          <TabPanels>
+            <TabPanel>{renderDayLogView()}</TabPanel>
+            <TabPanel>
+              <EntryListPage entries={myEntries} setEntries={setMyEntries} />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+
+        <CreateUpdateEntryModal
+          isOpen={isCreateModalOpen}
+          onClose={closeCreateModal}
+          onSubmit={handleCreateEntry}
+        />
+      </Box>
+    </Box>
+  );
+
+  // TODO: extract render fns. to separate components
+  function renderHeader() {
+    return (
+      <>
         <Grid
           gridTemplateColumns={"1fr 40px"}
           gridGap={5}
-          borderBottom={"1px solid"}
+          // borderBottom={"1px solid"}
           borderColor={"gray.200"}
-          pb={5}
-          mb={5}
+          pb={1}
+          mb={1}
         >
           <Heading>🍕 DailyBites</Heading>
 
@@ -121,7 +152,13 @@ function App() {
             </MenuList>
           </Menu>
         </Grid>
+      </>
+    );
+  }
 
+  function renderDayLogView() {
+    return (
+      <>
         <EntrySearch
           entries={myEntries}
           onEntrySelect={handleAddEntry}
@@ -146,6 +183,7 @@ function App() {
                 }}
               />
             </Grid>
+
             <Grid
               autoFlow="column"
               gap={10}
@@ -218,15 +256,9 @@ function App() {
             </Box>
           </Box>
         </HStack>
-
-        <CreateEntryModal
-          isOpen={isCreateModalOpen}
-          onClose={closeCreateModal}
-          onCreate={handleCreateEntry}
-        />
-      </Box>
-    </Box>
-  );
+      </>
+    );
+  }
 
   function handleAddEntry(entry: Entry) {
     const newTodayEntry: typeof selectedDayEntryLogs[0] = {
@@ -329,15 +361,15 @@ function EntryLogListItem({
         </NumberInputStepper>
       </NumberInput>
 
-      <IconButton
-        icon={<DeleteIcon color={"gray.400"} />}
-        aria-label={`delete ${entryLog.entry.name}`}
-        onClick={onDelete}
-        size={"sm"}
-        position={"absolute"}
-        top={0}
-        right={0}
-      />
+      <Box position={"absolute"} top={0} right={0}>
+        <DeleteButtonWithConfirmation
+          onDelete={onDelete}
+          alertDialogProps={{
+            title: `Delete "${entryLog.entry.name}"`,
+            description: `Are you sure? You are removing the entry called "${entryLog.entry.name}". This cannot be undone.`,
+          }}
+        />
+      </Box>
     </ListItem>
   );
 }

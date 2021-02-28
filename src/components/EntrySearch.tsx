@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AddIcon, SearchIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 import {
-  Input,
-  InputRightElement,
-  InputGroup,
   Box,
   List,
   ListItem,
@@ -16,7 +13,9 @@ import {
 import { Entry } from "../utils/typeUtils";
 import useOnClickOutside from "../utils/hooks/useOnClickOutside";
 import { EntryListItemContent } from "./EntryListItemContent";
-import CreateEntryModal from "./create-entry-modal/CreateEntryModal";
+import CreateUpdateEntryModal from "./create-entry-modal/CreateUpdateEntryModal";
+import SearchInput from "./SearchInput";
+import { filterEntriesBySearchKeyword } from "../utils/utils";
 
 interface EntrySearchProps {
   entries: Entry[];
@@ -45,11 +44,7 @@ function EntrySearch({
   useEffect(() => {
     if (searchInputValue) {
       setVisibleEntries(
-        entries.filter((i) =>
-          i.name
-            .toLocaleLowerCase()
-            .includes(searchInputValue.toLocaleLowerCase())
-        )
+        filterEntriesBySearchKeyword(entries, searchInputValue)
       );
       onOpen();
     } else {
@@ -61,17 +56,11 @@ function EntrySearch({
   return (
     <>
       <Box position={"relative"} ref={containerRef} zIndex={1}>
-        <InputGroup>
-          <Input
-            value={searchInputValue}
-            onChange={(e) => setSearchInputValue(e.currentTarget.value)}
-            placeholder="Search food or drinks"
-            background={"gray.200"}
-            _placeholder={{ color: "gray.400" }}
-            _focus={{ background: "white" }}
-          />
-          <InputRightElement children={<SearchIcon color="gray.500" />} />
-        </InputGroup>
+        <SearchInput
+          value={searchInputValue}
+          placeholder={"Search food or drinks"}
+          onChange={(value) => setSearchInputValue(value)}
+        />
 
         <SlideFade in={isOpen} unmountOnExit>
           <List
@@ -135,11 +124,11 @@ function EntrySearch({
         </SlideFade>
       </Box>
 
-      <CreateEntryModal
+      <CreateUpdateEntryModal
         isOpen={isCreateModalOpen}
         onClose={closeCreateModal}
-        onCreate={handleCreateEntry}
-        entryNameInitialValue={searchInputValue}
+        onSubmit={handleCreateEntry}
+        entry={{ name: searchInputValue }}
       />
     </>
   );
