@@ -155,7 +155,11 @@ function CreateUpdateEntryModal({
 
               <FormControl id="amount_type" flex={1}>
                 <FormLabel>Unit</FormLabel>
-                <Select background="white" defaultValue={ENTRY_AMOUNT_TYPES[0]}>
+                <Select
+                  background="white"
+                  defaultValue={formState.amount.type}
+                  onChange={handleEntryAmountTypeSelect}
+                >
                   {ENTRY_AMOUNT_TYPES.map((t) => (
                     <option key={`option-${t}`} value={t}>
                       {t}
@@ -190,6 +194,18 @@ function CreateUpdateEntryModal({
     setFormState({
       ...formState,
       [e.currentTarget.name]: e.currentTarget.value,
+    });
+  }
+
+  function handleEntryAmountTypeSelect(
+    e: React.SyntheticEvent<HTMLSelectElement>
+  ) {
+    setFormState({
+      ...formState,
+      amount: {
+        ...formState.amount,
+        type: e.currentTarget.value as Entry["amount"]["type"],
+      },
     });
   }
 

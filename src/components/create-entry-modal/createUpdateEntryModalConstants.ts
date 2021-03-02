@@ -1,4 +1,4 @@
-import { Entry } from "../../utils/typeUtils";
+import { Entry, ENTRY_AMOUNT_TYPES } from "../../utils/typeUtils";
 
 export const CREATE_UPDATE_ENTRY_FORM_INPUT_NAMES = {
   NAME: "NAME",
@@ -16,6 +16,6 @@ export const initialCreateEntryFormState = {
   [CREATE_UPDATE_ENTRY_FORM_INPUT_NAMES.KCAL]: "",
   amount: {
     value: "",
-    type: "" as Entry["amount"]["type"],
+    type: ENTRY_AMOUNT_TYPES[0] as Entry["amount"]["type"],
   },
 };
