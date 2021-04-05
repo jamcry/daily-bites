@@ -32,7 +32,11 @@ import {
 
 import CreateUpdateEntryModal from "./components/create-entry-modal/CreateUpdateEntryModal";
 import { defaults, Entry, EntryLog } from "./utils/typeUtils";
-import { loadDataFromLS, saveDataToLS } from "./utils/localStorageUtils";
+import {
+  AppState,
+  loadDataFromLS,
+  saveDataToLS,
+} from "./utils/localStorageUtils";
 import {
   downloadObjectAsJSON,
   generateRandomString,
@@ -43,6 +47,7 @@ import { EntryListItemContent } from "./components/EntryListItemContent";
 import { EntryNutritionDefinitionList } from "./components/EntryNutritionDefinitionList";
 import EntryListPage from "./components/EntryListPage";
 import DeleteButtonWithConfirmation from "./components/delete-button-with-confirmation/DeleteButton";
+import ImportLogModal from "./components/import-log-modal/ImportLogModal";
 
 function App() {
   const lsData = loadDataFromLS();
@@ -55,6 +60,7 @@ function App() {
     lsData?.myEntries || defaults
   );
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isImportLogModalOpen, setIsImportLogModalOpen] = useState(false);
   const selectedDateInYYYYMMDD = getDateStringInYYYYMMDD(selectedDate);
   const [selectedDayEntryLogs, setSelectedDayEntryLogs] = useState<EntryLog[]>(
     lsData?.myLogs?.[selectedDateInYYYYMMDD] || []
@@ -108,6 +114,12 @@ function App() {
           onClose={closeCreateModal}
           onSubmit={handleCreateEntry}
         />
+
+        <ImportLogModal
+          isOpen={isImportLogModalOpen}
+          onClose={() => setIsImportLogModalOpen(false)}
+          onLoad={handleBackupLoad}
+        />
       </Box>
     </Box>
   );
@@ -147,7 +159,13 @@ function App() {
                   )
                 }
               >
-                Download data (JSON)
+                Export data (JSON)
+              </MenuItem>
+              <MenuItem
+                icon={<DownloadIcon transform="rotate(180deg)" />}
+                onClick={() => setIsImportLogModalOpen(true)}
+              >
+                Import data (JSON)
               </MenuItem>
             </MenuList>
           </Menu>
@@ -273,6 +291,13 @@ function App() {
 
   function handleCreateEntry(entry: Entry) {
     setMyEntries([...(myEntries || []), entry]);
+  }
+
+  function handleBackupLoad(appState: AppState) {
+    saveDataToLS(appState);
+
+    // This is a lazy way to sync app state to local storage
+    window.location.reload();
   }
 }
 
