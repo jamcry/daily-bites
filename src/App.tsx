@@ -375,16 +375,16 @@ function EntryLogListItem({
 
       <NumberInput
         value={numOfServingInputValue}
-        step={0.1}
+        step={0.01}
         min={0.1}
-        precision={1}
+        precision={2}
         onChange={(valueStr, valNum) => {
           setNumOfServingInputValue(valueStr);
         }}
         w={100}
         focusInputOnChange={false}
       >
-        <NumberInputField background={"white"} />
+        <NumberInputField paddingLeft={1.5} background={"white"} />
         <NumberInputStepper>
           <NumberIncrementStepper />
           <NumberDecrementStepper />

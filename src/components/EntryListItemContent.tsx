@@ -16,7 +16,7 @@ export function EntryListItemContent({ entry }: { entry: Entry }) {
       alignItems={"center"}
     >
       <Flex
-        flexDirection={{ lg: "column", base: "row" }}
+        flexDirection={{ base: "column", sm: "row" }}
         gridGap={"0 6px"}
         textAlign={"left"}
       >
