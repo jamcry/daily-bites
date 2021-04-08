@@ -14,10 +14,13 @@ import {
   Text,
   Input,
   useToast,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 
 import { AppState } from "../../utils/localStorageUtils";
 import { isObjectValidAppState } from "../../utils/appStateUtils";
+import ButtonWithConfirmation from "../button-with-confirmation/ButtonWithConfirmation";
 
 interface ImportLogModalProps {
   isOpen: boolean;
@@ -38,13 +41,24 @@ function ImportLogModal({ isOpen, onClose, onLoad }: ImportLogModalProps) {
 
         <ModalCloseButton />
 
-        <form onSubmit={handleFormSubmit}>
+        <form>
           <ModalBody>
+            <Text mb={5}>
+              Select a backup file to upload and restore.{" "}
+              <b>
+                Be aware that importing a backup will OVERRIDE existing data!
+              </b>
+            </Text>
+
             <FormControl id="name" flex={2}>
-              <FormLabel>JSON</FormLabel>
+              <FormLabel>Backup file (.json)</FormLabel>
+
               <Input
                 type="file"
                 name={"log"}
+                padding={3}
+                height={"auto"}
+                bg={"gray.100"}
                 placeholder="Select json"
                 accept={".json"}
                 onChange={handleFileInputChange}
@@ -53,37 +67,45 @@ function ImportLogModal({ isOpen, onClose, onLoad }: ImportLogModalProps) {
             </FormControl>
 
             {selectedBackupDate && (
-              <Text>{`${selectedBackupDate.myEntries.length} entries and ${
-                Object.entries(selectedBackupDate.myLogs || {}).length || "No"
-              } day logs were found`}</Text>
+              <Alert
+                status="success"
+                mt={4}
+                borderRadius={4}
+                variant={"left-accent"}
+              >
+                <AlertIcon />
+                {`${selectedBackupDate.myEntries.length} entries and ${
+                  Object.entries(selectedBackupDate.myLogs || {}).length || "No"
+                } day logs were found`}
+              </Alert>
             )}
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
+            <Button variant="ghost" mr={3} onClick={handleClose}>
               Close
             </Button>
 
-            <Button
+            <ButtonWithConfirmation
+              onConfirm={handleFormSubmit}
+              alertDialogProps={{
+                title: `Are you sure?`,
+                description: `Importing a backup will OVERRIDE ANY EXISTING DATA!`,
+              }}
+              buttonText={"LOAD BACKUP"}
               colorScheme="blue"
-              type="submit"
               leftIcon={<DownloadIcon transform="rotate(180deg)" />}
               textTransform={"uppercase"}
               letterSpacing={"0.02em"}
               disabled={!isSubmitAllowed}
-            >
-              {/* 
-              // TODO: Show confirm dialog if app state !== defaultInitialState 
-              */}
-              {"LOAD BACKUP"}
-            </Button>
+            />
           </ModalFooter>
         </form>
       </ModalContent>
     </Modal>
   );
 
-  function handleFormSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+  function handleFormSubmit() {
     if (selectedBackupDate) {
       onLoad(selectedBackupDate);
     }
@@ -94,11 +116,11 @@ function ImportLogModal({ isOpen, onClose, onLoad }: ImportLogModalProps) {
     setSelectedBackupDate(undefined);
 
     if (file) {
-      var reader = new FileReader();
+      const reader = new FileReader();
 
       reader.onload = function (event: FileReaderEventMap["load"]) {
         // @ts-ignore
-        var loadedObj = JSON.parse(event.target.result);
+        const loadedObj = JSON.parse(event.target.result);
 
         if (!isObjectValidAppState(loadedObj)) {
           toast({
@@ -111,16 +133,17 @@ function ImportLogModal({ isOpen, onClose, onLoad }: ImportLogModalProps) {
           setIsSubmitAllowed(false);
         } else {
           setSelectedBackupDate(loadedObj as AppState);
-
           setIsSubmitAllowed(true);
         }
-        console.log({ jsonObj: loadedObj });
       };
 
       reader.readAsText(file);
-
-      // console.log({ file, name: file.name, parsed: JSON.parse(file) });
     }
+  }
+
+  function handleClose() {
+    setSelectedBackupDate(undefined);
+    onClose();
   }
 }
 

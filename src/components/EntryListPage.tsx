@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AddIcon, EditIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -16,7 +16,7 @@ import { Entry } from "../utils/typeUtils";
 import SearchInput from "./SearchInput";
 import CreateUpdateEntryModal from "./create-entry-modal/CreateUpdateEntryModal";
 import { EntryListItemContent } from "./EntryListItemContent";
-import DeleteButtonWithConfirmation from "./delete-button-with-confirmation/DeleteButton";
+import ButtonWithConfirmation from "./button-with-confirmation/ButtonWithConfirmation";
 import { filterEntriesBySearchKeyword } from "../utils/utils";
 
 interface EntryListPageProps {
@@ -84,11 +84,13 @@ function EntryListPage({ entries, setEntries }: EntryListPageProps) {
               >
                 <EntryListItemContent entry={entry} />
 
-                <DeleteButtonWithConfirmation
-                  onDelete={() => handleEntryDelete(entry)}
+                <ButtonWithConfirmation
+                  onConfirm={() => handleEntryDelete(entry)}
+                  icon={<DeleteIcon />}
                   alertDialogProps={{
                     title: `Delete "${entry.name}"`,
                     description: `Are you sure? You are removing the entry called "${entry.name}". This cannot be undone.`,
+                    confirmButtonText: "Delete",
                   }}
                 />
 

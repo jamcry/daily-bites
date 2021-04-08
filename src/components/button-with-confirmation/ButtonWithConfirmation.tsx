@@ -1,5 +1,4 @@
 import React from "react";
-import { DeleteIcon } from "@chakra-ui/icons";
 import {
   IconButton,
   AlertDialog,
@@ -9,31 +8,54 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   Button,
+  IconButtonProps,
+  ButtonProps,
 } from "@chakra-ui/react";
 
-interface PlaygroundProps {
-  onDelete: VoidFunction;
+type CommonCustomButtonProps = {
+  onConfirm: VoidFunction;
   alertDialogProps: {
     title: string;
     description: string;
+    confirmButtonText?: string;
   };
-}
+};
 
-function DeleteButtonWithConfirmation({
-  onDelete,
+type ButtonWithConfirmationProps =
+  | (ButtonProps &
+      CommonCustomButtonProps & {
+        buttonText?: string;
+      })
+  | (IconButtonProps & CommonCustomButtonProps);
+
+function ButtonWithConfirmation({
+  onConfirm,
   alertDialogProps,
-}: PlaygroundProps) {
+  // @ts-ignore
+  buttonText,
+  ...rest
+}: ButtonWithConfirmationProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const onClose = () => setIsOpen(false);
   const cancelRef = React.useRef<HTMLButtonElement>();
 
   return (
     <>
-      <IconButton
-        icon={<DeleteIcon />}
-        aria-label={alertDialogProps.title}
-        onClick={() => setIsOpen(true)}
-      />
+      {buttonText ? (
+        <Button
+          {...rest}
+          onClick={() => setIsOpen(true)}
+          aria-label={alertDialogProps.title}
+        >
+          {buttonText}
+        </Button>
+      ) : (
+        <IconButton
+          {...rest}
+          onClick={() => setIsOpen(true)}
+          aria-label={alertDialogProps.title}
+        />
+      )}
 
       <AlertDialog
         isOpen={isOpen}
@@ -57,8 +79,8 @@ function DeleteButtonWithConfirmation({
               >
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={onDelete} ml={3}>
-                Delete
+              <Button colorScheme="red" onClick={onConfirm} ml={3}>
+                {alertDialogProps.confirmButtonText || "Confirm"}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -68,4 +90,4 @@ function DeleteButtonWithConfirmation({
   );
 }
 
-export default DeleteButtonWithConfirmation;
+export default ButtonWithConfirmation;

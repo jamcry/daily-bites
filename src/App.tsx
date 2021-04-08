@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { AddIcon, DownloadIcon, HamburgerIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  DeleteIcon,
+  DownloadIcon,
+  HamburgerIcon,
+} from "@chakra-ui/icons";
 import {
   Box,
   Heading,
@@ -46,7 +51,7 @@ import EntrySearch from "./components/EntrySearch";
 import { EntryListItemContent } from "./components/EntryListItemContent";
 import { EntryNutritionDefinitionList } from "./components/EntryNutritionDefinitionList";
 import EntryListPage from "./components/EntryListPage";
-import DeleteButtonWithConfirmation from "./components/delete-button-with-confirmation/DeleteButton";
+import ButtonWithConfirmation from "./components/button-with-confirmation/ButtonWithConfirmation";
 import ImportLogModal from "./components/import-log-modal/ImportLogModal";
 
 function App() {
@@ -387,11 +392,13 @@ function EntryLogListItem({
       </NumberInput>
 
       <Box position={"absolute"} top={0} right={0}>
-        <DeleteButtonWithConfirmation
-          onDelete={onDelete}
+        <ButtonWithConfirmation
+          onConfirm={onDelete}
+          icon={<DeleteIcon />}
           alertDialogProps={{
             title: `Delete "${entryLog.entry.name}"`,
             description: `Are you sure? You are removing the entry called "${entryLog.entry.name}". This cannot be undone.`,
+            confirmButtonText: "Delete",
           }}
         />
       </Box>
