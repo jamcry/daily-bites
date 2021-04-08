@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { AddIcon, DownloadIcon, HamburgerIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  DeleteIcon,
+  DownloadIcon,
+  HamburgerIcon,
+} from "@chakra-ui/icons";
 import {
   Box,
   Heading,
@@ -32,7 +37,11 @@ import {
 
 import CreateUpdateEntryModal from "./components/create-entry-modal/CreateUpdateEntryModal";
 import { defaults, Entry, EntryLog } from "./utils/typeUtils";
-import { loadDataFromLS, saveDataToLS } from "./utils/localStorageUtils";
+import {
+  AppState,
+  loadDataFromLS,
+  saveDataToLS,
+} from "./utils/localStorageUtils";
 import {
   downloadObjectAsJSON,
   generateRandomString,
@@ -42,7 +51,8 @@ import EntrySearch from "./components/EntrySearch";
 import { EntryListItemContent } from "./components/EntryListItemContent";
 import { EntryNutritionDefinitionList } from "./components/EntryNutritionDefinitionList";
 import EntryListPage from "./components/EntryListPage";
-import DeleteButtonWithConfirmation from "./components/delete-button-with-confirmation/DeleteButton";
+import ButtonWithConfirmation from "./components/button-with-confirmation/ButtonWithConfirmation";
+import ImportLogModal from "./components/import-log-modal/ImportLogModal";
 
 function App() {
   const lsData = loadDataFromLS();
@@ -55,6 +65,7 @@ function App() {
     lsData?.myEntries || defaults
   );
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isImportLogModalOpen, setIsImportLogModalOpen] = useState(false);
   const selectedDateInYYYYMMDD = getDateStringInYYYYMMDD(selectedDate);
   const [selectedDayEntryLogs, setSelectedDayEntryLogs] = useState<EntryLog[]>(
     lsData?.myLogs?.[selectedDateInYYYYMMDD] || []
@@ -108,6 +119,12 @@ function App() {
           onClose={closeCreateModal}
           onSubmit={handleCreateEntry}
         />
+
+        <ImportLogModal
+          isOpen={isImportLogModalOpen}
+          onClose={() => setIsImportLogModalOpen(false)}
+          onLoad={handleBackupLoad}
+        />
       </Box>
     </Box>
   );
@@ -147,7 +164,13 @@ function App() {
                   )
                 }
               >
-                Download data (JSON)
+                Export data (JSON)
+              </MenuItem>
+              <MenuItem
+                icon={<DownloadIcon transform="rotate(180deg)" />}
+                onClick={() => setIsImportLogModalOpen(true)}
+              >
+                Import data (JSON)
               </MenuItem>
             </MenuList>
           </Menu>
@@ -274,6 +297,13 @@ function App() {
   function handleCreateEntry(entry: Entry) {
     setMyEntries([...(myEntries || []), entry]);
   }
+
+  function handleBackupLoad(appState: AppState) {
+    saveDataToLS(appState);
+
+    // This is a lazy way to sync app state to local storage
+    window.location.reload();
+  }
 }
 
 function NoLogMessageBox() {
@@ -345,16 +375,16 @@ function EntryLogListItem({
 
       <NumberInput
         value={numOfServingInputValue}
-        step={0.1}
+        step={0.01}
         min={0.1}
-        precision={1}
+        precision={2}
         onChange={(valueStr, valNum) => {
           setNumOfServingInputValue(valueStr);
         }}
         w={100}
         focusInputOnChange={false}
       >
-        <NumberInputField background={"white"} />
+        <NumberInputField paddingLeft={1.5} background={"white"} />
         <NumberInputStepper>
           <NumberIncrementStepper />
           <NumberDecrementStepper />
@@ -362,11 +392,13 @@ function EntryLogListItem({
       </NumberInput>
 
       <Box position={"absolute"} top={0} right={0}>
-        <DeleteButtonWithConfirmation
-          onDelete={onDelete}
+        <ButtonWithConfirmation
+          onConfirm={onDelete}
+          icon={<DeleteIcon />}
           alertDialogProps={{
             title: `Delete "${entryLog.entry.name}"`,
             description: `Are you sure? You are removing the entry called "${entryLog.entry.name}". This cannot be undone.`,
+            confirmButtonText: "Delete",
           }}
         />
       </Box>
