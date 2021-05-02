@@ -1,5 +1,3 @@
-import { Entry, EntryLog } from "./typeUtils";
-
 const LS_KEY = "daily_bites_app_data";
 
 export type AppState = {

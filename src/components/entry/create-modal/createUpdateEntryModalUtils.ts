@@ -1,5 +1,4 @@
-import { Entry } from "../../utils/typeUtils";
-import { generateRandomString } from "../../utils/utils";
+import { generateRandomString } from "../../../utils/utils";
 import {
   initialCreateEntryFormState,
   CREATE_UPDATE_ENTRY_FORM_INPUT_NAMES,

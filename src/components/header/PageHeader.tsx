@@ -17,9 +17,8 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 
-import { Entry } from "../../utils/typeUtils";
 import ImportLogModal from "../import-log-modal/ImportLogModal";
-import CreateUpdateEntryModal from "../create-entry-modal/CreateUpdateEntryModal";
+import CreateUpdateEntryModal from "../entry/create-modal/CreateUpdateEntryModal";
 import { downloadObjectAsJSON } from "../../utils/utils";
 import {
   AppState,

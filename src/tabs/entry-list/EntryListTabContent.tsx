@@ -12,20 +12,21 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
+import ButtonWithConfirmation from "../../components/button-with-confirmation/ButtonWithConfirmation";
+import CreateUpdateEntryModal from "../../components/entry/create-modal/CreateUpdateEntryModal";
+import { EntryListItemContent } from "../../components/entry/list-item-content/EntryListItemContent";
+import SearchInput from "../../components/search-input/SearchInput";
+import { filterEntriesBySearchKeyword } from "../../utils/utils";
 
-import { Entry } from "../utils/typeUtils";
-import SearchInput from "./SearchInput";
-import CreateUpdateEntryModal from "./create-entry-modal/CreateUpdateEntryModal";
-import { EntryListItemContent } from "./EntryListItemContent";
-import ButtonWithConfirmation from "./button-with-confirmation/ButtonWithConfirmation";
-import { filterEntriesBySearchKeyword } from "../utils/utils";
-
-interface EntryListPageProps {
+interface EntryListTabContentProps {
   entries: Entry[];
   setEntries: React.Dispatch<React.SetStateAction<Entry[]>>;
 }
 
-function EntryListPage({ entries, setEntries }: EntryListPageProps) {
+function EntryListTabContent({
+  entries,
+  setEntries,
+}: EntryListTabContentProps) {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [visibleEntries, setVisibleEntries] = useState<Entry[]>(entries);
   const [entryToBeEdited, setEntryToBeEdited] = useState<Entry | null>(null);
@@ -49,7 +50,7 @@ function EntryListPage({ entries, setEntries }: EntryListPageProps) {
   const listItemBorderColor = useColorModeValue("gray.100", "gray.600");
 
   return (
-    <div className={"playground-container"}>
+    <>
       <SearchInput
         value={searchInputValue}
         placeholder={"Filter entries by name"}
@@ -122,7 +123,7 @@ function EntryListPage({ entries, setEntries }: EntryListPageProps) {
         entry={entryToBeEdited || undefined}
         mode={entryToBeEdited ? "EDIT" : "CREATE"}
       />
-    </div>
+    </>
   );
 
   function handleCreateUpdateEntryModalSubmit(entry: Entry) {
@@ -147,4 +148,4 @@ function EntryListPage({ entries, setEntries }: EntryListPageProps) {
   }
 }
 
-export default EntryListPage;
+export default EntryListTabContent;

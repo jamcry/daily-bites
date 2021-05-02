@@ -1,5 +1,4 @@
 import { AppState } from "./localStorageUtils";
-import { EntryLog, Entry } from "./typeUtils";
 
 function isObjectValidAppState(obj: AppState) {
   return Boolean(

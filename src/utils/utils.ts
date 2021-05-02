@@ -1,9 +1,12 @@
-import { Entry } from "./typeUtils";
-
 function generateRandomString(length = 6) {
   return Math.random().toString(20).substr(2, length);
 }
 
+/**
+ *
+ * @param date Date object to be parsed string
+ * @returns Date string in format YYYYMMDD (e.g. 2020-12-04)
+ */
 function getDateStringInYYYYMMDD(date?: Date) {
   return (date || new Date()).toISOString().slice(0, 10).replace(/-/g, "");
 }

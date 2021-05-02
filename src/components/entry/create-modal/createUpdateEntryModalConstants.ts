@@ -1,4 +1,4 @@
-import { Entry, ENTRY_AMOUNT_TYPES } from "../../utils/typeUtils";
+import { ENTRY_AMOUNT_TYPES } from "../util/entryConstants";
 
 export const CREATE_UPDATE_ENTRY_FORM_INPUT_NAMES = {
   NAME: "NAME",

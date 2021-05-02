@@ -16,7 +16,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 
-import { Entry, ENTRY_AMOUNT_TYPES } from "../../utils/typeUtils";
+import { ENTRY_AMOUNT_TYPES } from "../util/entryConstants";
 import {
   CREATE_UPDATE_ENTRY_FORM_INPUT_NAMES,
   initialCreateEntryFormState,

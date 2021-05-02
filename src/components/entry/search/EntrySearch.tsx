@@ -11,12 +11,11 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-import { Entry } from "../utils/typeUtils";
-import useOnClickOutside from "../utils/hooks/useOnClickOutside";
-import { EntryListItemContent } from "./EntryListItemContent";
-import CreateUpdateEntryModal from "./create-entry-modal/CreateUpdateEntryModal";
-import SearchInput from "./SearchInput";
-import { filterEntriesBySearchKeyword } from "../utils/utils";
+import useOnClickOutside from "../../../utils/hooks/useOnClickOutside";
+import { EntryListItemContent } from "../list-item-content/EntryListItemContent";
+import CreateUpdateEntryModal from "../create-modal/CreateUpdateEntryModal";
+import SearchInput from "../../search-input/SearchInput";
+import { filterEntriesBySearchKeyword } from "../../../utils/utils";
 
 interface EntrySearchProps {
   entries: Entry[];

@@ -1,10 +1,19 @@
 import React from "react";
 import { Grid, Text, Flex, Badge } from "@chakra-ui/react";
 
-import { Entry } from "../utils/typeUtils";
-import { EntryNutritionDefinitionList } from "./EntryNutritionDefinitionList";
+import { EntryNutritionDefinitionList } from "../nutrition-definition-list/EntryNutritionDefinitionList";
 
-export function EntryListItemContent({ entry }: { entry: Entry }) {
+/**
+ *
+ * @param numOfServings will be multiplied by entry values (amount and nutritions) for showing in UI
+ */
+export function EntryListItemContent({
+  entry,
+  numOfServings = 1,
+}: {
+  entry: Entry;
+  numOfServings?: number;
+}) {
   return (
     <Grid
       gridTemplateColumns={{
@@ -24,11 +33,14 @@ export function EntryListItemContent({ entry }: { entry: Entry }) {
         <Text lineHeight={{ base: "100%" }}>{entry.name}</Text>
 
         <Badge width={"max-content"} variant={"outline"}>
-          {entry.amount.value} {entry.amount.type}
+          {entry.amount.value * numOfServings} {entry.amount.type}
         </Badge>
       </Flex>
 
-      <EntryNutritionDefinitionList values={entry} />
+      <EntryNutritionDefinitionList
+        values={entry}
+        numOfServings={numOfServings}
+      />
     </Grid>
   );
 }
