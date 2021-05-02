@@ -16,6 +16,7 @@ import {
   useToast,
   Alert,
   AlertIcon,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 import { AppState } from "../../utils/localStorageUtils";
@@ -58,7 +59,7 @@ function ImportLogModal({ isOpen, onClose, onLoad }: ImportLogModalProps) {
                 name={"log"}
                 padding={3}
                 height={"auto"}
-                bg={"gray.100"}
+                bg={useColorModeValue("gray.100", "blue.700")}
                 placeholder="Select json"
                 accept={".json"}
                 onChange={handleFileInputChange}

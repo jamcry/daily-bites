@@ -9,6 +9,7 @@ import {
   List,
   ListItem,
   Text,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 
@@ -45,6 +46,8 @@ function EntryListPage({ entries, setEntries }: EntryListPageProps) {
     }
   }, [searchInputValue, entries]);
 
+  const listItemBorderColor = useColorModeValue("gray.100", "gray.600");
+
   return (
     <div className={"playground-container"}>
       <SearchInput
@@ -79,7 +82,7 @@ function EntryListPage({ entries, setEntries }: EntryListPageProps) {
                 alignItems={"center"}
                 padding={1}
                 borderBottom={"1px solid"}
-                borderColor={"gray.200"}
+                borderColor={listItemBorderColor}
                 marginBottom={2}
               >
                 <EntryListItemContent entry={entry} />

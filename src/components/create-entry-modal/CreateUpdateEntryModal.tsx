@@ -81,7 +81,6 @@ function CreateUpdateEntryModal({
                   value={formState[NAME]}
                   onChange={handleInputChange}
                   isRequired
-                  background="white"
                 />
               </FormControl>
 
@@ -93,7 +92,6 @@ function CreateUpdateEntryModal({
                   value={formState[KCAL]}
                   onChange={handleInputChange}
                   isRequired
-                  background="white"
                 />
               </FormControl>
             </HStack>
@@ -108,7 +106,6 @@ function CreateUpdateEntryModal({
                   step=".1"
                   onChange={handleInputChange}
                   isRequired
-                  background="white"
                 />
               </FormControl>
 
@@ -121,7 +118,6 @@ function CreateUpdateEntryModal({
                   step=".1"
                   onChange={handleInputChange}
                   isRequired
-                  background="white"
                 />
               </FormControl>
 
@@ -134,7 +130,6 @@ function CreateUpdateEntryModal({
                   step=".1"
                   onChange={handleInputChange}
                   isRequired
-                  background="white"
                 />
               </FormControl>
             </HStack>
@@ -149,14 +144,12 @@ function CreateUpdateEntryModal({
                   step=".1"
                   onChange={handleAmountValueChange}
                   isRequired
-                  background="white"
                 />
               </FormControl>
 
               <FormControl id="amount_type" flex={1}>
                 <FormLabel>Unit</FormLabel>
                 <Select
-                  background="white"
                   defaultValue={formState.amount.type}
                   onChange={handleEntryAmountTypeSelect}
                 >

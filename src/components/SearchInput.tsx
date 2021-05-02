@@ -20,9 +20,6 @@ function SearchInput({ value, onChange, placeholder }: SearchInputProps) {
         value={value}
         onChange={(e) => onChange(e.currentTarget.value)}
         placeholder={placeholder}
-        background={"gray.200"}
-        _placeholder={{ color: "gray.400" }}
-        _focus={{ background: "white" }}
       />
       <InputRightElement
         children={

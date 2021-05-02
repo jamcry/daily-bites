@@ -26,36 +26,51 @@ type ButtonWithConfirmationProps =
       CommonCustomButtonProps & {
         buttonText?: string;
       })
-  | (IconButtonProps & CommonCustomButtonProps);
+  | (IconButtonProps & CommonCustomButtonProps)
+  | ({ customTriggerElement: JSX.Element } & CommonCustomButtonProps);
 
 function ButtonWithConfirmation({
   onConfirm,
   alertDialogProps,
   // @ts-ignore
   buttonText,
+  // @ts-ignore
+  customTriggerElement,
   ...rest
 }: ButtonWithConfirmationProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const onClose = () => setIsOpen(false);
   const cancelRef = React.useRef<HTMLButtonElement>();
 
+  let triggerElement;
+
+  if (customTriggerElement) {
+    triggerElement = React.cloneElement(customTriggerElement, {
+      onClick: () => setIsOpen(true),
+    });
+  } else if (buttonText) {
+    triggerElement = (
+      <Button
+        {...rest}
+        onClick={() => setIsOpen(true)}
+        aria-label={alertDialogProps.title}
+      >
+        {buttonText}
+      </Button>
+    );
+  } else {
+    triggerElement = (
+      <IconButton
+        {...rest}
+        onClick={() => setIsOpen(true)}
+        aria-label={alertDialogProps.title}
+      />
+    );
+  }
+
   return (
     <>
-      {buttonText ? (
-        <Button
-          {...rest}
-          onClick={() => setIsOpen(true)}
-          aria-label={alertDialogProps.title}
-        >
-          {buttonText}
-        </Button>
-      ) : (
-        <IconButton
-          {...rest}
-          onClick={() => setIsOpen(true)}
-          aria-label={alertDialogProps.title}
-        />
-      )}
+      {triggerElement}
 
       <AlertDialog
         isOpen={isOpen}

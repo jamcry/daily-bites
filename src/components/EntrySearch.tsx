@@ -8,6 +8,7 @@ import {
   IconButton,
   Button,
   SlideFade,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 import { Entry } from "../utils/typeUtils";
@@ -53,6 +54,9 @@ function EntrySearch({
     }
   }, [searchInputValue, onOpen, onClose, entries]);
 
+  const addIconButtonColorScheme = useColorModeValue("blackAlpha", undefined);
+  const listItemBorderColor = useColorModeValue("gray.300", "gray.600");
+
   return (
     <>
       <Box position={"relative"} ref={containerRef} zIndex={1}>
@@ -66,14 +70,14 @@ function EntrySearch({
           <List
             position={"absolute"}
             width={"100%"}
-            bg={"white"}
             borderRadius={4}
             border={"1px solid"}
-            borderColor={"gray.100"}
+            borderColor={useColorModeValue("gray.100", "gray.600")}
             zIndex={2}
-            boxShadow={"0 0 10px #999"}
+            boxShadow={useColorModeValue("0 0 10px #999", "0 0 10px #333")}
             maxHeight={"300px"}
             overflow={"auto"}
+            background={useColorModeValue("gray.50", "gray.700")}
           >
             {!visibleEntries.length && (
               <ListItem
@@ -86,7 +90,6 @@ function EntrySearch({
                   justifyContent={"flex-start"}
                   width={"100%"}
                   onClick={openCreateModal}
-                  background={"transparent"}
                 >
                   {`Create New Entry (${searchInputValue})`}
                 </Button>
@@ -97,14 +100,13 @@ function EntrySearch({
               <ListItem
                 key={i.id}
                 transition={"background 0.23s"}
-                _hover={{ bg: "gray.100" }}
                 padding={"4px 12px"}
                 display={"grid"}
                 gridTemplateColumns={"1fr auto"}
                 gridGap={5}
                 alignItems={"center"}
                 borderBottom={"1px solid"}
-                borderColor={"gray.300"}
+                borderColor={listItemBorderColor}
               >
                 <EntryListItemContent entry={i} />
 
@@ -112,7 +114,7 @@ function EntrySearch({
                   aria-label={`add ${i.name} to list`}
                   icon={<AddIcon />}
                   size={"sm"}
-                  colorScheme={"blackAlpha"}
+                  colorScheme={addIconButtonColorScheme}
                   onClick={() => {
                     onEntrySelect(i);
                     setSearchInputValue("");

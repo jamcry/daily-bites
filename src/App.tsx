@@ -3,6 +3,7 @@ import {
   AddIcon,
   DeleteIcon,
   DownloadIcon,
+  EditIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
 import {
@@ -33,39 +34,40 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Button,
+  useColorMode,
+  useColorModeValue,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
+  Portal,
+  InputGroup,
+  FormLabel,
+  Flex,
 } from "@chakra-ui/react";
 
-import CreateUpdateEntryModal from "./components/create-entry-modal/CreateUpdateEntryModal";
 import { defaults, Entry, EntryLog } from "./utils/typeUtils";
-import {
-  AppState,
-  loadDataFromLS,
-  saveDataToLS,
-} from "./utils/localStorageUtils";
-import {
-  downloadObjectAsJSON,
-  generateRandomString,
-  getDateStringInYYYYMMDD,
-} from "./utils/utils";
+import { loadDataFromLS, saveDataToLS } from "./utils/localStorageUtils";
+import { generateRandomString, getDateStringInYYYYMMDD } from "./utils/utils";
 import EntrySearch from "./components/EntrySearch";
 import { EntryListItemContent } from "./components/EntryListItemContent";
 import { EntryNutritionDefinitionList } from "./components/EntryNutritionDefinitionList";
 import EntryListPage from "./components/EntryListPage";
 import ButtonWithConfirmation from "./components/button-with-confirmation/ButtonWithConfirmation";
-import ImportLogModal from "./components/import-log-modal/ImportLogModal";
+import PageHeader from "./components/header/PageHeader";
 
 function App() {
   const lsData = loadDataFromLS();
-  const {
-    isOpen: isCreateModalOpen,
-    onOpen: openCreateModal,
-    onClose: closeCreateModal,
-  } = useDisclosure();
+
   const [myEntries, setMyEntries] = useState<Entry[]>(
     lsData?.myEntries || defaults
   );
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isImportLogModalOpen, setIsImportLogModalOpen] = useState(false);
   const selectedDateInYYYYMMDD = getDateStringInYYYYMMDD(selectedDate);
   const [selectedDayEntryLogs, setSelectedDayEntryLogs] = useState<EntryLog[]>(
     lsData?.myLogs?.[selectedDateInYYYYMMDD] || []
@@ -91,17 +93,16 @@ function App() {
   }, [myEntries, selectedDayEntryLogs, selectedDateInYYYYMMDD]);
 
   return (
-    <Box bgColor={"gray.50"} width={"100%"} height={"100vh"}>
+    <Box width={"100%"} height={"100vh"}>
       <Box
         padding={{ lg: "24px", base: "12px" }}
         maxWidth={"960px"}
         margin={"auto"}
-        bgColor={"gray.50"}
       >
-        {renderHeader()}
+        <PageHeader onCreateEntry={handleCreateEntry} />
 
-        <Tabs variant={"line"} colorScheme={"blue"} bgColor={"gray.50"} isLazy>
-          <TabList mb={2}>
+        <Tabs variant={"line"} colorScheme={"blue"} isLazy>
+          <TabList mb={2} id={"tab-list"}>
             <Tab background={"transparent"}>Logs</Tab>
             <Tab>Entries</Tab>
           </TabList>
@@ -113,71 +114,9 @@ function App() {
             </TabPanel>
           </TabPanels>
         </Tabs>
-
-        <CreateUpdateEntryModal
-          isOpen={isCreateModalOpen}
-          onClose={closeCreateModal}
-          onSubmit={handleCreateEntry}
-        />
-
-        <ImportLogModal
-          isOpen={isImportLogModalOpen}
-          onClose={() => setIsImportLogModalOpen(false)}
-          onLoad={handleBackupLoad}
-        />
       </Box>
     </Box>
   );
-
-  // TODO: extract render fns. to separate components
-  function renderHeader() {
-    return (
-      <>
-        <Grid
-          gridTemplateColumns={"1fr 40px"}
-          gridGap={5}
-          // borderBottom={"1px solid"}
-          borderColor={"gray.200"}
-          pb={1}
-          mb={1}
-        >
-          <Heading>🍕 DailyBites</Heading>
-
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              aria-label="Options"
-              icon={<HamburgerIcon />}
-              size="md"
-              variant="outline"
-            />
-            <MenuList zIndex={4}>
-              <MenuItem icon={<AddIcon />} onClick={openCreateModal}>
-                Create Entry
-              </MenuItem>
-              <MenuItem
-                icon={<DownloadIcon />}
-                onClick={() =>
-                  downloadObjectAsJSON(
-                    loadDataFromLS(),
-                    `dailybites_data_${new Date().getTime()}`
-                  )
-                }
-              >
-                Export data (JSON)
-              </MenuItem>
-              <MenuItem
-                icon={<DownloadIcon transform="rotate(180deg)" />}
-                onClick={() => setIsImportLogModalOpen(true)}
-              >
-                Import data (JSON)
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        </Grid>
-      </>
-    );
-  }
 
   function renderDayLogView() {
     return (
@@ -214,6 +153,8 @@ function App() {
               borderColor={"gray.400"}
               borderRadius={5}
               padding={2}
+              // eslint-disable-next-line react-hooks/rules-of-hooks
+              background={useColorModeValue("gray.100", "gray.700")}
             >
               <EntryNutritionDefinitionList
                 values={selectedDayEntryLogs.reduce(
@@ -297,13 +238,6 @@ function App() {
   function handleCreateEntry(entry: Entry) {
     setMyEntries([...(myEntries || []), entry]);
   }
-
-  function handleBackupLoad(appState: AppState) {
-    saveDataToLS(appState);
-
-    // This is a lazy way to sync app state to local storage
-    window.location.reload();
-  }
 }
 
 function NoLogMessageBox() {
@@ -361,7 +295,6 @@ function EntryLogListItem({
   return (
     <ListItem
       key={entryLog.id}
-      background={"gray.100"}
       mb={3}
       p={2}
       display={"flex"}
@@ -370,38 +303,66 @@ function EntryLogListItem({
       borderRadius={4}
       gridGap={"8px"}
       position={"relative"}
+      border={"1px solid"}
+      borderColor={useColorModeValue("gray.300", "gray.600")}
     >
       <EntryListItemContent entry={entryLog.entry} />
 
-      <NumberInput
-        value={numOfServingInputValue}
-        step={0.01}
-        min={0.1}
-        precision={2}
-        onChange={(valueStr, valNum) => {
-          setNumOfServingInputValue(valueStr);
-        }}
-        w={100}
-        focusInputOnChange={false}
-      >
-        <NumberInputField paddingLeft={1.5} background={"white"} />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
+      <Popover>
+        <PopoverTrigger>
+          <IconButton
+            variant={"outline"}
+            aria-label={"toggle log item menu"}
+            icon={<EditIcon />}
+          />
+        </PopoverTrigger>
+        <Portal>
+          <PopoverContent marginRight={1}>
+            <PopoverArrow />
+            <PopoverCloseButton />
+            <PopoverBody>
+              <InputGroup display={"grid"} mb={3}>
+                <FormLabel>{`Update Amount (${entryLog.entry.amount.type})`}</FormLabel>
 
-      <Box position={"absolute"} top={0} right={0}>
-        <ButtonWithConfirmation
-          onConfirm={onDelete}
-          icon={<DeleteIcon />}
-          alertDialogProps={{
-            title: `Delete "${entryLog.entry.name}"`,
-            description: `Are you sure? You are removing the entry called "${entryLog.entry.name}". This cannot be undone.`,
-            confirmButtonText: "Delete",
-          }}
-        />
-      </Box>
+                <NumberInput
+                  // TODO: convert this to a more mobile friendly component
+                  // exp: https://chakra-ui.com/docs/form/number-input#create-a-mobile-spinner
+                  value={numOfServingInputValue}
+                  step={0.01}
+                  min={0.1}
+                  precision={2}
+                  onChange={(valueStr, valNum) => {
+                    setNumOfServingInputValue(valueStr);
+                  }}
+                  focusInputOnChange={false}
+                >
+                  <NumberInputField paddingLeft={1.5} />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </InputGroup>
+            </PopoverBody>
+
+            <PopoverFooter>
+              <Flex justifyContent={"space-between"}>
+                <ButtonWithConfirmation
+                  colorScheme={"red"}
+                  leftIcon={<DeleteIcon />}
+                  buttonText={"Delete Log"}
+                  onConfirm={onDelete}
+                  alertDialogProps={{
+                    title: `Delete "${entryLog.entry.name}"`,
+                    description: `Are you sure? You are removing the entry called "${entryLog.entry.name}". This cannot be undone.`,
+                    confirmButtonText: "Delete",
+                  }}
+                />
+              </Flex>
+            </PopoverFooter>
+          </PopoverContent>
+        </Portal>
+      </Popover>
     </ListItem>
   );
 }

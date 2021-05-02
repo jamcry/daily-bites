@@ -1,5 +1,5 @@
 import React from "react";
-import { List, ListItem, Grid } from "@chakra-ui/react";
+import { List, ListItem, Grid, useColorModeValue } from "@chakra-ui/react";
 
 import { Entry } from "../utils/typeUtils";
 
@@ -8,6 +8,7 @@ export function EntryNutritionDefinitionList({
 }: {
   values: Pick<Entry, "protein" | "carb" | "fat" | "calories"> | Entry;
 }) {
+  const dtColor = useColorModeValue("gray.600", "gray.300");
   return (
     <List
       as={"dl"}
@@ -17,28 +18,28 @@ export function EntryNutritionDefinitionList({
       textAlign={{ base: "left", lg: "right" }}
     >
       <Grid>
-        <ListItem as="dt" fontSize={"x-small"} color={"gray.600"}>
+        <ListItem as="dt" fontSize={"x-small"} color={dtColor}>
           PROTEIN
         </ListItem>
         <ListItem as="dd">{protein?.toFixed(1) || "-"}</ListItem>
       </Grid>
 
       <Grid>
-        <ListItem as="dt" fontSize={"x-small"} color={"gray.600"}>
+        <ListItem as="dt" fontSize={"x-small"} color={dtColor}>
           CARB
         </ListItem>
         <ListItem as="dd">{carb?.toFixed(1) || "-"}</ListItem>
       </Grid>
 
       <Grid>
-        <ListItem as="dt" fontSize={"x-small"} color={"gray.600"}>
+        <ListItem as="dt" fontSize={"x-small"} color={dtColor}>
           FAT
         </ListItem>
         <ListItem as="dd">{fat?.toFixed(1) || "-"}</ListItem>
       </Grid>
 
       <Grid>
-        <ListItem as="dt" fontSize={"x-small"} color={"gray.600"}>
+        <ListItem as="dt" fontSize={"x-small"} color={dtColor}>
           KCAL
         </ListItem>
         <ListItem as="dd">{calories?.toFixed(1) || "-"}</ListItem>
