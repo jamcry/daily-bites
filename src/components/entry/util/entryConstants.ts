@@ -13,147 +13,77 @@ export const DEFAULT_ENTRIES: Entry[] = [
       type: "serving",
     },
   },
-
   {
-    id: "default-entry-0923903i093i09",
-    name: "NAMET Smoked Turkey",
-    protein: 1.7,
-    carb: 0.2,
-    fat: 0.18,
-    calories: 9.2,
-    amount: {
-      value: 1,
-      type: "slice",
-    },
-  },
-
-  {
-    id: "default-entry-u843i094ti093i09",
-    name: "Lor Cheese",
-    protein: 16.85,
-    carb: 2.73,
-    fat: 3.6,
-    calories: 173,
-    amount: {
-      value: 100,
-      type: "gr",
-    },
-  },
-
-  {
-    id: "default-entry-65ju65j55u6u46u56",
-    name: "EMIN Cheese Meatballs",
-    protein: 21,
-    carb: 7,
-    fat: 11,
-    calories: 214,
-    amount: {
-      value: 100,
-      type: "gr",
-    },
-  },
-
-  {
-    id: "default-entry-5u4y54u56j675i5i756i",
-    name: "UNO Toast Bread",
-    protein: 1.7,
-    carb: 13.5,
-    fat: 0.5,
-    calories: 65,
-    amount: {
-      value: 1,
-      type: "slice",
-    },
-  },
-
-  {
-    id: "default-entry-54u4u565675ik75ik5",
-    name: "GOLD Peanut Butter",
-    protein: 22,
-    carb: 30.6,
-    fat: 42.8,
-    calories: 580,
-    amount: {
-      value: 100,
-      type: "gr",
-    },
-  },
-
-  {
-    id: "default-entry-h54u56u655j56j",
-    name: "Supefresh Tuna Fish (80g)",
-    protein: 16.6,
-    carb: 0,
-    fat: 8,
-    calories: 130,
-    amount: {
-      value: 1,
-      type: "pack",
-    },
-  },
-
-  {
-    id: "default-entry-4jhu56j4j",
+    id: "default-entry-j2389328493",
     name: "Chicken Breast",
     protein: 31,
     carb: 0,
-    fat: 4,
+    fat: 3.6,
     calories: 165,
     amount: {
       value: 100,
       type: "gr",
     },
   },
-
   {
-    id: "default-entry-46uh44y45yy3y5",
-    name: "Mushroom",
-    protein: 3,
-    carb: 3.2,
-    fat: 0.1,
-    calories: null,
+    id: "default-entry-k4872490872",
+    name: "Brown Rice",
+    protein: 2.6,
+    carb: 22,
+    fat: 1.8,
+    calories: 111,
+    amount: {
+      value: 50,
+      type: "gr",
+    },
+  },
+  {
+    id: "default-entry-m9238749827",
+    name: "Avocado",
+    protein: 2,
+    carb: 8.5,
+    fat: 14.7,
+    calories: 160,
+    amount: {
+      value: 1 / 2,
+      type: "serving",
+    },
+  },
+  {
+    id: "default-entry-p3457329856",
+    name: "Salmon Fillet",
+    protein: 25,
+    carb: 0,
+    fat: 13.5,
+    calories: 210,
     amount: {
       value: 100,
       type: "gr",
     },
   },
-
   {
-    id: "default-entry-53hu46u46u46",
-    name: "Indomie Noodle (80g)",
-    protein: 8.8,
-    carb: 48,
-    fat: 13,
-    calories: 370,
+    id: "default-entry-q5472093857",
+    name: "Sweet Potato",
+    protein: 1.6,
+    carb: 20.7,
+    fat: 0.1,
+    calories: 86,
     amount: {
-      value: 1,
-      type: "pack",
+      value: 150,
+      type: "gr",
     },
   },
-
   {
-    id: "default-entry-45ju54u5445y54",
-    name: "Local Toast Bread (30g)",
-    protein: 2.85,
-    carb: 14,
-    fat: 1,
-    calories: 75,
+    id: "default-entry-r8740398340",
+    name: "Turkish Yogurt",
+    protein: 10,
+    carb: 3.6,
+    fat: 0.4,
+    calories: 59,
     amount: {
-      value: 1,
-      type: "slice",
+      value: 100,
+      type: "gr",
     },
   },
-
-  {
-    id: "default-entry-54uh4h54yu4u454",
-    name: "Half-fat Milk (250ml)",
-    protein: 7.3,
-    carb: 11.8,
-    fat: 4.3,
-    calories: 114,
-    amount: {
-      value: 1,
-      type: "pack",
-    },
-  },
+  // Add more entries here in the same format if needed.
 ];
